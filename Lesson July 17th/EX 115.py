@@ -1,6 +1,6 @@
 # Question 2 (Pig Latin)
 
-def pig_latin_word(word):
+def pig_latin(word):
     vowels = 'aeiou'
     if word[0] in vowels:
         return word + 'way'
@@ -10,7 +10,7 @@ def pig_latin_word(word):
                 return word[i:] + word[:i] + 'ay'
         return word + 'ay'
 
-line = input("Enter a line of text: ")
+line = input("Enter word: ")
 words = line.split()
-pig_latin_words = [pig_latin_word(word) for word in words]
+pig_latin_words = [pig_latin(word) for word in words]
 print(' '.join(pig_latin_words))
