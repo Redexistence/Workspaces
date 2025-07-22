@@ -2,8 +2,8 @@ input_date = input("Enter date: ")
 year, month, day = map(int, input_date.split('-'))
 days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-def leap_yr(y):
-    return (y % 4 == 0 and y % 100 != 0) or (y % 400 == 0)
+def leap_yr(yr):
+    return (yr % 4 == 0 and yr % 100 != 0) or (yr % 400 == 0)
 
 if month == 2 and leap_yr(year):
     max_day = 29
