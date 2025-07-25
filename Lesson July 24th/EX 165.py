@@ -14,6 +14,6 @@ while True:
 
 if grades:
     avg = sum(grades) / len(grades)
-    print(f"Your GPA is {avg:.2f}")
+    print(f"Your GPA (Average) is {avg:.2f}")
 else:
     print("None entered.")
