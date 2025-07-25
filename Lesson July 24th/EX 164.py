@@ -12,12 +12,12 @@ while True:
 print(f"Total: ${total:.2f}")
 
 pennies = round(total * 100)
-remain = pennies % 5
+remained = pennies % 5
 
-if remain < 2.5:
-    adjusted = pennies - remain
+if remained < 2.5:
+    adjusted = pennies - remained
 else:
-    adjusted = pennies + (5 - remain)
+    adjusted = pennies + (5 - remained)
 
 cash_total = adjusted / 100
-print(f"Amount due (cash): ${cash_total:.2f}")
+print(f"Cash: ${cash_total:.2f}")
