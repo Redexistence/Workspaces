@@ -2,7 +2,6 @@ def is_magic_date(day, month, year):
     two_digit_year = year % 100
     return day * month == two_digit_year
 
-
 print("Magic dates in the 20th century (1900-1999):")
 for year in range(1900, 2000):
     for month in range(1, 13):
