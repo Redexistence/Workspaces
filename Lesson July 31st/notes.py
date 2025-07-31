@@ -120,3 +120,14 @@ print(new_set)
 print("---")
 new_set = A.union(B) # Same operation as above but using method
 print(new_set)
+
+time.sleep(5)
+os.system('cls')
+# Difference (difference()) or -):  A set that consists of elements tat are in one set but not the other
+# Fun language fact: In Ruby, you can subtract Arrays: arr = [1, 2, 3] - [1, 3] will give you a, arr of [a] in Ruby.
+# Python *does not* support this: you have to convert the lists to sets in order to do this, so the same operation in python should be
+# arr1 = [1, 2, 3]
+# arr2 = [1, 3]
+# result = list(set(arr1) - set(arr2))
+# print(result)  # Output: [2]
+# Intersection (intersection or &)
