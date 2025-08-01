@@ -131,3 +131,10 @@ os.system('cls')
 # result = list(set(arr1) - set(arr2))
 # print(result)  # Output: [2]
 # Intersection (intersection or &)
+# Immutable Contraints on Sets:
+# Sets can only contain immutable (aka. "hashable") object types.
+# Lists and dictionary connot be embedded in sets, but tuples can if you ned to store compound values.
+S = {1, 23}
+# You cannot do this because it makes an error S.add([1, 2, 3])
+# Also not this one S.add({'a': 1})
+
