@@ -138,3 +138,39 @@ S = {1, 23}
 # You cannot do this because it makes an error S.add([1, 2, 3])
 # Also not this one S.add({'a': 1})
 
+def fun(name):
+    print(f"Hello {name}, welcome to Algorithmics!")
+
+cheer = fun
+print(f"The id of fun(): {id(fun)}")
+print(f"The id of cheer(): {id(cheer)}")
+
+print(fun('Berny'))
+print(cheer('Jack'))
+
+time.sleep(5)
+os.system('cls')
+
+# Lambda/Anonymus
+greet = lambda : print("Hello World!")
+print(greet())
+
+time.sleep(2)
+os.system('cls')
+
+# --------------------
+
+def myfunc(n):
+    return lambda a : a*n
+
+mydoubler = myfunc(2)
+mytripler = myfunc(3)
+myNtimes = myfunc(6)
+
+print(mydoubler(11))
+print(mytripler(11))
+print(myNtimes(5))
+
+time.sleep(3)
+os.system('cls')
+
