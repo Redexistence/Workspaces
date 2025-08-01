@@ -95,11 +95,11 @@ os.system('cls')
 
 # Note: You can't use a literal to create an empty set because Python thinks it's a dictionary.
 new_variable = {}
-type(new_variable)  # Output: <class 'dict'> (not a set)
+print(type(new_variable))  # Output: <class 'dict'> (not a set)
 # Here is a hack to get around that
 new_variable = {1}
 new_variable.remove(1)  # Remove the element to make it an empty set
-type(new_variable)  # Output: <class 'set'> (now it's a set)
+print(type(new_variable))  # Output: <class 'set'> (now it's a set)
 
 time.sleep(3)
 os.system('cls')
@@ -173,4 +173,36 @@ print(myNtimes(5))
 
 time.sleep(3)
 os.system('cls')
-
+time.sleep(1)
+exit_command = input("That's all for today, the excersices are down below. To clear terminal, press 'x'. ")
+if exit_command == 'x':
+    print("Clearing Terminal.")
+    time.sleep(0.5)
+    os.system('cls')
+    print("Clearing Terminal..")
+    time.sleep(0.5)
+    os.system('cls')
+    print('Clearing Terminal...')
+    time.sleep(0.5)
+    os.system('cls')
+    print("Clearing Terminal.")
+    time.sleep(0.5)
+    os.system('cls')
+    print("Clearing Terminal..")
+    time.sleep(0.5)
+    os.system('cls')
+    print('Clearing Terminal...')
+    time.sleep(0.5)
+    os.system('cls')
+    print("Clearing Terminal.")
+    time.sleep(0.5)
+    os.system('cls')
+    print("Clearing Terminal..")
+    time.sleep(0.5)
+    os.system('cls')
+    print('Clearing Terminal...')
+    time.sleep(0.5)
+    os.system('cls')
+    print("Terminal Cleared!")
+    time.sleep(2)
+    os.system('cls')
