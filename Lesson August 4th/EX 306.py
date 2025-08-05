@@ -1,0 +1,2 @@
+When analyzing data collected as part of a science experiment it may be desirable to remove the most extreme values before performing other calculations.
+Write a function that takes a list of values and an non-elements
