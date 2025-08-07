@@ -1,6 +1,6 @@
 import random
 
-def create_bingo_card():
+def create_card():
     bingo = {}
     ranges = {
         'B': range(1, 16),
@@ -15,7 +15,7 @@ def create_bingo_card():
     
     return bingo
 
-def display_bingo_card(bingo):
+def display_card(bingo):
     print(" B   I   N   G   O")
     for i in range(5):
         for letter in "BINGO":
@@ -23,5 +23,5 @@ def display_bingo_card(bingo):
         print()
 
 
-card = create_bingo_card()
-display_bingo_card(card)
+card = create_card()
+display_card(card)
