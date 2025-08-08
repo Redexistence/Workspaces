@@ -20,7 +20,7 @@ import datetime
 today = datetime.date.today()
 
 # Get your birthday date
-birthday = datetime.date(2010, 1, 1)
+birthday = datetime.date(2011,7,12)
 
 # Calculate the difference in days between today and your birthday
 difference = (today - birthday).days
