@@ -14,9 +14,9 @@ if numbers:
     average = sum(numbers) / len(numbers)
     print(f"\nAverage: {average:.2f}")
 
-    below = [num for num in numbers if num < average]
-    average_num = [num for num in numbers if num == average]
-    above = [num for num in numbers if num > average]
+    below = [num for num in numbers if num < average] # Below average values
+    average_num = [num for num in numbers if num == average] # Average values
+    above = [num for num in numbers if num > average] # Above average values
 
     print("\nBelow average values:")
     print(below if below else "None")
