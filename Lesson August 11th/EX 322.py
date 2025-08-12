@@ -23,6 +23,6 @@ def tokenize(expr):
     
     return tokens
 
-expr = "-3 + 5 * (10 - 4)"
+expr = input("Enter math expression: ")
 tokens = tokenize(expr)
 print(tokens)
