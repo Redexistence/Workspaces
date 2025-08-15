@@ -6,7 +6,7 @@ def create_maze(width, height):
     maze = [['#' for _ in range(width)] for _ in range(height)]
     stack = []
     
-    start_x, start_y = (1, 1) # Start at a random odd-numbered cell
+    start_x, start_y = (1, 1)
     stack.append((start_x, start_y))
     maze[start_y][start_x] = ' '
     
@@ -14,7 +14,6 @@ def create_maze(width, height):
         x, y = stack.pop()
         
         neighbors = []
-        # Check all 4 directions for unvisited neighbors (2 cells away)
         if y > 1 and maze[y - 2][x] == '#':
             neighbors.append((x, y - 2))
         if y < height - 2 and maze[y + 2][x] == '#':
