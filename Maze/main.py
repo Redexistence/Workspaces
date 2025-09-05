@@ -58,9 +58,6 @@ print_maze(my_maze)
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-
-maze_width = 21
-maze_height = 21
     
 maze = create_maze(maze_width, maze_height)
     
