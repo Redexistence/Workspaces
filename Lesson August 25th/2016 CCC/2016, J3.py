@@ -19,4 +19,4 @@ def longest_palind(word):
     return max_len
 
 word = input().strip()
-print(longest_palind(word)) 
+print(longest_palind(word))
