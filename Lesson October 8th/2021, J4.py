@@ -14,11 +14,11 @@ M_in_S = S_sec.count('M')
 S_in_L = L_sec.count('S')
 S_in_M = M_sec.count('S')
 
-swap_L_M = min(M_in_L, L_in_M)
-swap_L_S = min(S_in_L, L_in_S)
-swap_M_S = min(S_in_M, M_in_S)
+swap_L_M = min(M_in_L, L_in_M) # direct swaps between L and M
+swap_L_S = min(S_in_L, L_in_S) # direct swaps between L and S
+swap_M_S = min(S_in_M, M_in_S) # direct swaps between M and S
 
-rem_M_in_L = M_in_L - swap_L_M
+rem_M_in_L = M_in_L - swap_L_M # remaining misplacements after direct swaps
 rem_L_in_M = L_in_M - swap_L_M
 rem_S_in_L = S_in_L - swap_L_S
 rem_L_in_S = L_in_S - swap_L_S
