@@ -1,0 +1,5 @@
+R = int(input())
+G = int(input())
+B = int(input())
+cost = (R * 3) + (G * 4) + (B * 5)
+print(cost)

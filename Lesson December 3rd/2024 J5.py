@@ -1,0 +1,58 @@
+from collections import deque
+
+r = int(input())
+c = int(input())
+
+
+def valid(node):
+    x, y = node
+    if 0 <= x < r:
+        if 0 <= y < c:
+            if not visited[x][y]:
+                if patch[x][y] != "*":
+                    return True
+    return False
+
+def neighbours(node):
+    x, y = node
+    return [[x+1, y], [x-1, y], [x, y+1], [x, y-1]]
+
+patch = []
+visited = []
+
+for i in range(r):
+    patch.append(list(input()))
+    visited.append([False] * c)
+
+a = int(input())
+b = int(input())
+
+queue = deque([[a, b]])
+score = 0
+visited[a][b] = True
+cur = patch[a][b]
+if cur == "S":
+    score += 1
+if cur == "M":
+    score += 5
+if cur == "L":
+    score += 10
+    
+while queue:
+    node = queue.popleft()
+    
+    for n in neighbours(node):
+        if valid(n):
+            a, b = n[0], n[1]
+            visited[a][b] = True
+            cur = patch[a][b]
+            if cur == "S":
+                score += 1
+            if cur == "M":
+                score += 5
+            if cur == "L":
+                score += 10
+
+            queue.append(n)
+
+print(score)
