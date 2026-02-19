@@ -87,7 +87,7 @@ def generate(word):
             )
             results.append((i + 1, pos + 1, new_word))
             start = pos + 1
-    return results
+    return resultsx
 
 queue = deque()
 queue.append((src, 0, []))
