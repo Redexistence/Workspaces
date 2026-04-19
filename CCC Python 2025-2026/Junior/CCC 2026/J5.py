@@ -28,4 +28,4 @@ for _ in range(Q):
     q = next(it)
     out.append('Y' if covered[q] else 'N')
 
-sys.stdout.write("\n".join(out) + ("\n" if out else ""))
+sys.stdout.write("\n".join(out) + ("\n" if out else ""))    
