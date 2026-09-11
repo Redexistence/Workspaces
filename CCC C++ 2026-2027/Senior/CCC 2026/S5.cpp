@@ -201,6 +201,96 @@ ll solve_case(ll N, ll M, ll K, ll R, ll C) {
         if (lost >= 0) answer = max(answer, h * w - lost);
     };
 
+    // On grids up to 6 by 6, enumerate the possible inside cells exactly.
+    // There are at most 16 non-edge cells, so this is small enough.  For a
+    // chosen inside set, every non-edge cell adjacent to it (including
+    // diagonal adjacency) must be fence; otherwise that inside cell can
+    // escape to the edge.  If those forced cells plus (R,C) are connected,
+    // they form a valid fence candidate.
+    if (N <= 6 && M <= 6) {
+        // Bitmask implementation of the exact small-grid search.  The
+        // previous version rebuilt several N-by-M vectors for every subset;
+        // this avoids that allocation-heavy hot loop.
+        const int rows = (int)N, cols = (int)M;
+        const int cell_count = rows * cols;
+        vector<unsigned long long> adj4(cell_count), adj8(cell_count);
+        vector<int> interior_indices;
+        unsigned long long edge_mask = 0;
+
+        for (int r = 0; r < rows; ++r) {
+            for (int c = 0; c < cols; ++c) {
+                const int id = r * cols + c;
+                if (r == 0 || r == rows - 1 || c == 0 || c == cols - 1)
+                    edge_mask |= 1ULL << id;
+                for (int dr = -1; dr <= 1; ++dr) {
+                    for (int dc = -1; dc <= 1; ++dc) {
+                        if (dr == 0 && dc == 0) continue;
+                        int nr = r + dr, nc = c + dc;
+                        if (nr < 0 || nr >= rows || nc < 0 || nc >= cols)
+                            continue;
+                        const int nid = nr * cols + nc;
+                        adj8[id] |= 1ULL << nid;
+                        if (abs(dr) + abs(dc) == 1)
+                            adj4[id] |= 1ULL << nid;
+                    }
+                }
+                if (r >= 1 && r + 1 < rows && c >= 1 && c + 1 < cols)
+                    interior_indices.push_back(id);
+            }
+        }
+
+        const int required_id = (int)((R - 1) * M + (C - 1));
+        const unsigned long long required_bit = 1ULL << required_id;
+        const int inside_count = (int)interior_indices.size();
+        for (unsigned long long subset = 0;
+             subset < (1ULL << inside_count); ++subset) {
+            unsigned long long inside = 0, fence = required_bit;
+            for (int i = 0; i < inside_count; ++i) {
+                if ((subset >> i) & 1ULL)
+                    inside |= 1ULL << interior_indices[i];
+            }
+            if (inside & required_bit) continue;
+
+            // Every non-inside cell adjacent diagonally to an inside cell is
+            // forced to be fence, otherwise that inside cell can escape.
+            unsigned long long remaining = inside;
+            while (remaining) {
+                const int id = __builtin_ctzll(remaining);
+                remaining &= remaining - 1;
+                fence |= adj8[id] & ~inside;
+            }
+            if (__builtin_popcountll(fence) > (unsigned long long)K)
+                continue;
+
+            // Check that all fence cells form one 4-connected component.
+            unsigned long long seen = 0;
+            unsigned long long pending = fence & (~fence + 1);
+            while (pending) {
+                const int id = __builtin_ctzll(pending);
+                pending &= pending - 1;
+                if (seen & (1ULL << id)) continue;
+                seen |= 1ULL << id;
+                pending |= adj4[id] & fence & ~seen;
+            }
+            if (seen != fence) continue;
+
+            // Mark all non-fence cells reachable from an edge using diagonal
+            // movement.  The rest are enclosed cells.
+            unsigned long long outside = edge_mask & ~fence;
+            pending = outside;
+            while (pending) {
+                const int id = __builtin_ctzll(pending);
+                pending &= pending - 1;
+                pending |= adj8[id] & ~fence & ~outside;
+                outside |= pending & ~outside;
+            }
+            const ll enclosed = cell_count - __builtin_popcountll(fence) -
+                                __builtin_popcountll(outside);
+            answer = max(answer, enclosed);
+        }
+        return answer;
+    }
+
     // The small/medium subtask is cheap enough to solve exactly.  This is
     // also important because affordability is not guaranteed to be monotone
     // in a dimension: an extra column can place (R,C) on the boundary and
@@ -211,9 +301,18 @@ ll solve_case(ll N, ll M, ll K, ll R, ll C) {
     // can change at a rectangle placement breakpoint, and those breakpoints
     // are not all stationary points of the budget equation.
     if (N <= 2000 && M <= 2000) {
-        for (ll h = 1; h <= H; ++h)
-            for (ll w = 1; w <= W; ++w)
+        // A rectangle itself uses 2h + 2w + 4 fence cells.  Do not visit
+        // dimensions that cannot fit before the required-cell connection is
+        // even considered.
+        const ll dimension_budget = (K - 4) / 2;
+        if (dimension_budget <= 1) return answer;
+        const ll max_h = min(H, dimension_budget - 1);
+        const ll max_w = min(W, dimension_budget - 1);
+        for (ll h = 1; h <= max_h; ++h) {
+            const ll w_limit = min(max_w, dimension_budget - h);
+            for (ll w = 1; w <= w_limit; ++w)
                 consider(h, w);
+        }
         return answer;
     }
     for (ll h : hc) {
