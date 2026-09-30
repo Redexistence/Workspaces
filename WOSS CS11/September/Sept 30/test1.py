@@ -13,7 +13,7 @@ Billy SmithBilly SmithBilly Smith
 """
 
 digit = int(input("Enter a single digit: "))
-full_name = input("Enter your first and last name: ")
+full_name = input("Enter your full name: ")
 
 print(f"The full name has {len(full_name)} characters")
 print(full_name * digit)
@@ -25,14 +25,14 @@ Still display how many characters are in the user's full name but this time DO N
 Display the name as many times as the digit, without spaces.
 
 Sample input:
-Please enter a single digit and your first and last name: 3 Billy Smith
+Please enter a single digit and your full name: 3 Billy Smith
 
 Sample output:
 The full name has 10 characters
 BillySmithBillySmithBillySmith
 """
 
-user_input = input("Please enter a single digit and your first and last name: ")
+user_input = input("Please enter a single digit and your full name: ")
 digit_text, full_name = user_input.split(" ", 1)
 digit = int(digit_text)
 
@@ -54,7 +54,7 @@ BillySmithBillySmithBillySmith
 bILLYsMITHbILLYsMITHbILLYsMITH
 """
 
-user_input = input("Enter a single digit and your first and last name: ")
+user_input = input("Enter a single digit and your full name: ")
 digit_text, full_name = user_input.split(" ", 1)
 digit = int(digit_text)
 
@@ -68,7 +68,7 @@ Continue from level 4.
 Create a new string made of the initial of the last name combined with the initial of the first name.
 Display the new string as many times as the length of the full name without space.
 Sample input:
-Please enter a single digit and your first and last name: 3 Billy Smith
+Please enter a single digit and your full name: 3 Billy Smith
 
 Sample output:
 The full name has 10 characters
@@ -77,7 +77,7 @@ bILLYsMITHbILLYsMITHbILLYsMITH
 SBSBSBSBSBSBSBSBSBSB
 """
 
-user_input = input("Enter a single digit and your first and last name: ")
+user_input = input("Enter a single digit and your full name: ")
 digit_text, full_name = user_input.split(" ", 1)
 digit = int(digit_text)
 
