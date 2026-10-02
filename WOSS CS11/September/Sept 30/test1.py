@@ -86,7 +86,7 @@ print(f"The full name has {len(name_without_spaces)} characters")
 print(name_without_spaces * digit)
 print(name_without_spaces.swapcase() * digit)
 
-first_initial = full_name.split()[0][0]
-last_initial = full_name.split()[-1][0]
+first_initial = full_name.split()[0][0] # Get the first initial of the first name by splitting the full name and taking the first character of the first part
+last_initial = full_name.split()[-1][0] # Get the first initial of the last name by splitting the full name and taking the first character of the last part
 initial_pair = last_initial + first_initial
 print(initial_pair * len(name_without_spaces))
