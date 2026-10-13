@@ -14,6 +14,31 @@ DESIGN_X0, DESIGN_Y0 = 40, 50
 BG = (255, 255, 255)
 INK = (22, 22, 22)
 
+# Colour palette
+SKY = (200, 228, 246) # Light Blue
+TREE = (104, 156, 84) # Green
+WOOD = (176, 134, 92) # Brown
+ROOF = (84, 92, 118) # Slate Gray
+BRICK = (168, 82, 62) # Brick Red
+BRICK_DARK = (126, 60, 46) # Dark Brick Red
+STONE = (196, 190, 178) # Stone Gray
+STONE_LIGHT = (222, 218, 208) # Light Stone Gray
+SOOT = (70, 66, 64) # Soot Black
+WALL = (246, 232, 200) # Cream Wall
+TIMBER = (112, 72, 46) # Timber Brown
+TRIM = (250, 250, 246) # Trim White
+GLASS = (168, 206, 230) # Glass Blue
+GOLD = (212, 176, 82) # Gold
+DOOR = (128, 38, 44) # Door Red
+DOOR_LIGHT = (156, 58, 62) # Door Light Red
+LAWN = (122, 182, 86) # Lawn Green
+STEP = (214, 208, 196) # Step Gray
+PAVING = (226, 210, 178) # Paving Stone
+PAVER = (190, 112, 82) # Paver Brick
+CURB = (178, 178, 176) # Curb Gray
+CURB_DARK = (150, 150, 150) # Darker Curb Gray
+ROAD = (110, 112, 118) # Road Gray
+
 W_MAIN = 5.0                 # line widths in design units
 W_MED = 4.0
 W_THIN = 3.0
@@ -77,29 +102,29 @@ def lines(points, w=W_MAIN, closed=False):
         _seg(pts[i], pts[i+1], w)
 
 
-def fill(points):
+def fill(points, color=BG):
     converted_pts = []
     for p in points:
         converted_pts.append(P(*p))
-    pygame.draw.polygon(surf, BG, converted_pts)
+    pygame.draw.polygon(surf, color, converted_pts)
 
 
-def shape(points, w=W_MAIN):
-    # White-filled closed polygon with an ink outline (hides what is behind).
-    fill(points)
+def shape(points, w=W_MAIN, color=BG):
+    # Filled closed polygon with an ink outline (hides what is behind).
+    fill(points, color)
     lines(points, w, closed=True)
 
 
-def box(x1, y1, x2, y2, w=W_MAIN):
-    shape([(x1, y1), (x2, y1), (x2, y2), (x1, y2)], w)
+def box(x1, y1, x2, y2, w=W_MAIN, color=BG):
+    shape([(x1, y1), (x2, y1), (x2, y2), (x1, y2)], w, color)
 
 
-def rbox(x1, y1, x2, y2, radius, w=W_MED):
-    # Rounded rectangle, white filled.
+def rbox(x1, y1, x2, y2, radius, w=W_MED, color=BG):
+    # Filled rounded rectangle.
     a, b = P(x1, y1), P(x2, y2)
     rect = pygame.Rect(round(a[0]), round(a[1]), round(b[0] - a[0]), round(b[1] - a[1]))
     rr = round(px(radius))
-    pygame.draw.rect(surf, BG, rect, border_radius=rr)
+    pygame.draw.rect(surf, color, rect, border_radius=rr)
     pygame.draw.rect(surf, INK, rect, width=max(1, round(px(w))), border_radius=rr)
 
 
@@ -149,7 +174,7 @@ def sub_quad(q, u1, v1, u2, v2):
     return [quad_pt(q, u1, v1), quad_pt(q, u2, v1), quad_pt(q, u2, v2), quad_pt(q, u1, v2)]
 
 
-def beam(a, b, width, w=W_MED):
+def beam(a, b, width, w=W_MED, color=TIMBER):
     # A timber brace drawn as a white strip with two outlines.
     dx, dy = b[0] - a[0], b[1] - a[1]
     length = math.hypot(dx, dy)
@@ -157,10 +182,10 @@ def beam(a, b, width, w=W_MED):
         length = 0.001 # quick fix for division by zero crash
     nx, ny = -dy / length * width / 2, dx / length * width / 2
     shape([(a[0] + nx, a[1] + ny), (b[0] + nx, b[1] + ny),
-           (b[0] - nx, b[1] - ny), (a[0] - nx, a[1] - ny)], w)
+           (b[0] - nx, b[1] - ny), (a[0] - nx, a[1] - ny)], w, color)
 
 
-def scallops(points, bulge=0.35, w=W_MAIN):
+def scallops(points, bulge=0.35, w=W_MAIN, fill_to=None, color=TREE):
     # Bumpy foliage outline: an arc bulging to the left of travel per segment.
     out = [points[0]]
     for (x1, y1), (x2, y2) in zip(points, points[1:]):
@@ -171,6 +196,8 @@ def scallops(points, bulge=0.35, w=W_MAIN):
             px_val = (1 - t) ** 2 * x1 + 2 * (1 - t) * t * cx + t * t * x2
             py_val = (1 - t) ** 2 * y1 + 2 * (1 - t) * t * cy + t * t * y2
             out.append((px_val, py_val))
+    if fill_to:
+        fill(out + fill_to, color)
     lines(out, w)
 
 
@@ -187,11 +214,12 @@ def tuft(x, y):
 def draw_trees_and_fences():
     # Left tree canopy outline (runs from the page edge to the left spire)
     scallops([(40, 152), (62, 138), (86, 118), (100, 98), (126, 94), (140, 126),
-              (147, 157), (172, 178), (200, 195), (220, 214), (229, 250), (252, 292)])
+              (147, 157), (172, 178), (200, 195), (220, 214), (229, 250), (252, 292)],
+             fill_to=[(252, 930), (40, 930)])
     # Right tree canopy outline (runs from the roof corner to the page edge)
     scallops([(917, 346), (930, 318), (950, 280), (963, 256), (972, 230),
               (999, 197), (1020, 170), (1031, 146), (1047, 124), (1062, 127),
-              (1070, 145)])
+              (1070, 145)], fill_to=[(1070, 930), (917, 930)])
 
     # Leaf / bark texture marks - manually added coordinates lol
     squiggle([(58, 184), (63, 178), (68, 183), (73, 178), (78, 183)])
@@ -210,6 +238,7 @@ def draw_trees_and_fences():
     # Garden fences peeking out on both sides
     for side in (lambda p: p, mirror):
         top = [(42, 826), (58, 831), (74, 839), (88, 848)]
+        fill(side(smooth(top) + [(88, 925), (42, 925)]), WOOD)
         curve(side(top), W_MED)
         fence_coords = [(48, 828), (60, 832), (72, 838), (84, 845)]
         for x, y in fence_coords:
@@ -219,38 +248,39 @@ def draw_trees_and_fences():
 def draw_main_roof():
     outline = [(52, 565), (50, 552), (65, 490), (177, 345),
                (mx(177), 345), (mx(65), 490), (mx(50), 552), (mx(52), 565)]
-    fill(outline)
+    fill(outline, ROOF)
     lines(outline)
+    fill([(50, 552), (mx(50), 552), (mx(52), 565), (52, 565)], TRIM)
     line((50, 552), (mx(50), 552))   # fascia
     line((52, 565), (mx(52), 565))
 
 
 def draw_chimney(cx):
-    box(cx - 27, 347, cx + 27, 400)                 # flashing / base
-    box(cx - 18, 302, cx + 18, 384)                 # stack
-    rbox(cx - 22, 287, cx + 22, 303, 6, W_MAIN)     # crown
-    box(cx - 8, 274, cx + 8, 288)                   # pot
+    box(cx - 27, 347, cx + 27, 400, color=STONE)    # flashing / base
+    box(cx - 18, 302, cx + 18, 384, color=BRICK)    # stack
+    rbox(cx - 22, 287, cx + 22, 303, 6, W_MAIN, STONE_LIGHT)  # crown
+    box(cx - 8, 274, cx + 8, 288, color=BRICK_DARK)  # pot
     
     vent_positions = [322, 343, 365]
     for y in vent_positions:                        # little vents
-        rbox(cx - 7, y, cx + 7, y + 9, 3, W_THIN)
+        rbox(cx - 7, y, cx + 7, y + 9, 3, W_THIN, SOOT)
 
 
 def draw_dormer():
     c = AXIS
-    box(c - 69, 425, c + 69, 442)                   # soffit
+    box(c - 69, 425, c + 69, 442, color=TRIM)       # soffit
     line((c - 69, 432), (c + 69, 432), W_THIN)
-    box(c - 65, 440, c + 65, 482)                   # window wall
+    box(c - 65, 440, c + 65, 482, color=WALL)       # window wall
     line((c, 440), (c, 482), W_MED)
-    box(c - 72, 396, c + 72, 425)                   # roof slab
+    box(c - 72, 396, c + 72, 425, color=ROOF)       # roof slab
     
     for x1 in (c - 48, c + 12):
-        box(x1, 447, x1 + 36, 476, W_MED)
+        box(x1, 447, x1 + 36, 476, W_MED, TRIM)
         for ix in range(2):
             for iy in range(2):
                 bx = x1 + 4 + ix * 15
                 by = 451 + iy * 12
-                rbox(bx, by, bx + 13, by + 9, 3, W_THIN)
+                rbox(bx, by, bx + 13, by + 9, 3, W_THIN, GLASS)
 
 
 def draw_turret(tx):
@@ -268,7 +298,7 @@ def draw_turret(tx):
         right.append((-dx, y))
         
     cone = side(left + [(-76, 537), (76, 537)] + right[::-1])
-    fill(cone)
+    fill(cone, ROOF)
     lines(side(left))
     lines(side(right))
     facet = [(-6, 297), (-32, 375), (-52, 460), (-68, 510), (-76, 537)]
@@ -279,12 +309,12 @@ def draw_turret(tx):
         rev_facet.append((-dx, y))
     curve(side(rev_facet), W_MED)
     
-    shape(side([(0, 266), (12, 298), (-12, 298)]))  # finial
+    shape(side([(0, 266), (12, 298), (-12, 298)]), color=GOLD)  # finial
 
     # Eave band around the bottom of the cone
     band = [(-160, 543), (-76, 537), (76, 537), (160, 543),
             (170, 563), (76, 557), (-76, 557), (-170, 563)]
-    shape(side(band))
+    shape(side(band), color=TRIM)
     lines(side([(-163, 550), (-76, 546), (76, 546), (163, 550)]), W_MED)
     
     for dx in (-76, 76):
@@ -292,8 +322,9 @@ def draw_turret(tx):
 
 
 def window(q, rows, transom=None, mullion_top=0.0, sill=False):
-    shape(q, W_MAIN)
+    shape(q, W_MAIN, TRIM)
     inner = sub_quad(q, 0.08, 0.04, 0.92, 0.96)
+    fill(inner, GLASS)
     lines(inner, W_THIN, closed=True)
     if transom:
         for v in transom:
@@ -303,6 +334,8 @@ def window(q, rows, transom=None, mullion_top=0.0, sill=False):
     line(quad_pt(inner, 0.5, mullion_top), quad_pt(inner, 0.5, 1), W_MED)
     if sill:
         tl, tr, br, bl = q
+        fill([(bl[0] - 4, bl[1]), (bl[0] - 4, bl[1] + 7),
+              (br[0] + 4, br[1] + 7), (br[0] + 4, br[1])], TRIM)
         lines([(bl[0] - 4, bl[1]), (bl[0] - 4, bl[1] + 7),
                (br[0] + 4, br[1] + 7), (br[0] + 4, br[1])], W_MED)
 
@@ -314,7 +347,9 @@ def draw_tower(tx):
             res.append((tx + dx, y))
         return res
 
-    fill(side([(-140, 560), (140, 560), (140, 930), (-140, 930)]))
+    fill(side([(-140, 560), (140, 560), (140, 930), (-140, 930)]), WALL)
+    for x1, x2 in ((-140, -133), (-63, -56), (56, 63), (133, 140)):   # corner posts
+        fill(side([(x1, 560), (x2, 560), (x2, 930), (x1, 930)]), TIMBER)
     
     vertical_lines = (-140, -133, -63, -56, 56, 63, 133, 140)
     for dx in vertical_lines:
@@ -333,6 +368,9 @@ def draw_tower(tx):
     for a, b in braces:
         beam(side([a])[0], side([b])[0], 10)
         
+    for y in (698, 756):                            # timber rails
+        top = [(-140, y), (-60, y - 8 + (y == 756) * 2), (60, y - 8 + (y == 756) * 2), (140, y)]
+        fill(side(top + [(x, yy + 7) for x, yy in top[::-1]]), TIMBER)
     for off in (0, 7):
         lines(side([(-140, 698 + off), (-60, 690 + off), (60, 690 + off), (140, 698 + off)]), W_MED)
         lines(side([(-140, 756 + off), (-60, 750 + off), (60, 750 + off), (140, 756 + off)]), W_MED)
@@ -353,70 +391,73 @@ def draw_tower(tx):
 
 def draw_side_walls():
     for side in (lambda p: p, mirror):
-        fill(side([(75, 566), (117, 566), (117, 930), (75, 930)]))
+        fill(side([(75, 566), (117, 566), (117, 930), (75, 930)]), WALL)
+        fill(side([(90, 566), (98, 566), (98, 930), (90, 930)]), TIMBER)
         lines(side([(75, 566), (75, 655), (90, 655)]), W_MED)
         for x in (90, 98):
             lines(side([(x, 566), (x, 930)]), W_MED)
-        shape(side([(98, 698), (117, 698), (117, 706), (98, 706)]), W_MED)
+        shape(side([(98, 698), (117, 698), (117, 706), (98, 706)]), W_MED, TIMBER)
 
 
 def draw_center_wall():
-    fill([(397, 566), (713, 566), (713, 930), (397, 930)])
+    fill([(397, 566), (713, 566), (713, 930), (397, 930)], WALL)
 
 
 def draw_gable():
     c = AXIS
-    fill([(c, 480), (441, 584), (451, 595), (451, 676), (mx(451), 676), (mx(451), 595), (mx(441), 584)])
+    fill([(c, 480), (441, 584), (451, 595), (451, 676), (mx(451), 676), (mx(451), 595), (mx(441), 584)], WALL)
     
     for side in (lambda p: p, mirror):
+        fill(side([(497, 500 + (c - 497) * 0.91), (509, 500 + (c - 509) * 0.91), (509, 676), (497, 676)]), TIMBER)
         lines(side([(455, 592), (455, 676)]), W_MED)
         lines(side([(470, 592), (470, 676)]), W_THIN)
         for x in (497, 509):                        # timber posts
             calc_y = 500 + (c - x) * 0.91
             lines(side([(x, calc_y), (x, 676)]), W_MED)
             
+    fill([(c - 6, 503), (c + 6, 503), (c + 6, 578), (c - 6, 578)], TIMBER)
     lines([(c - 6, 503), (c - 6, 578)], W_MED)      # king post
     lines([(c + 6, 503), (c + 6, 578)], W_MED)
-    shape([(469, 578), (mx(469), 578), (mx(456), 590), (456, 590)], W_MED)  # collar beam
+    shape([(469, 578), (mx(469), 578), (mx(456), 590), (456, 590)], W_MED, TIMBER)  # collar beam
 
     # French doors onto the balcony
-    box(c - 40, 598, c + 40, 676)
-    box(c - 35, 604, c - 2, 676, W_MED)
-    box(c + 2, 604, c + 35, 676, W_MED)
+    box(c - 40, 598, c + 40, 676, color=TRIM)
+    box(c - 35, 604, c - 2, 676, W_MED, GLASS)
+    box(c + 2, 604, c + 35, 676, W_MED, GLASS)
     pygame.draw.circle(surf, INK, P(c - 7, 640), px(2.8))
     pygame.draw.circle(surf, INK, P(c + 7, 640), px(2.8))
 
     # Barge boards
     for side in (lambda p: p, mirror):
-        shape(side([(c, 480), (441, 584), (451, 595), (c, 500)]))
+        shape(side([(c, 480), (441, 584), (451, 595), (c, 500)]), color=TIMBER)
 
 
 def draw_balcony_and_entrance():
     c = AXIS
-    box(c - 165, 675, c + 165, 720)                 # balcony front
+    box(c - 165, 675, c + 165, 720, color=TRIM)     # balcony front
     line((c - 165, 713), (c + 165, 713), W_THIN)
-    box(c - 165, 745, c + 165, 757)                 # porch beam
-    rbox(c - 178, 727, c + 178, 745, 7, W_MAIN)     # balcony floor slab
+    box(c - 165, 745, c + 165, 757, color=TIMBER)   # porch beam
+    rbox(c - 178, 727, c + 178, 745, 7, W_MAIN, STONE)  # balcony floor slab
     line((c - 172, 736), (c + 172, 736), W_THIN)
 
     # Porch side walls and door surround
     line((466, 757), (477, 776), W_MED)
     line((mx(466), 757), (mx(477), 776), W_MED)
-    box(477, 776, mx(477), 930)
+    box(477, 776, mx(477), 930, color=TRIM)
     
     quoin_y_vals = [782, 808, 834, 860, 886]
     for y in quoin_y_vals:                          # quoin stones
-        rbox(452, y, 477, y + 15, 4, W_MED)
-        rbox(mx(477), y, mx(452), y + 15, 4, W_MED)
+        rbox(452, y, 477, y + 15, 4, W_MED, STONE)
+        rbox(mx(477), y, mx(452), y + 15, 4, W_MED, STONE)
 
     for side in (lambda p: p, mirror):
         # Side lights
-        shape(side([(480, 782), (506, 782), (506, 930), (480, 930)]), W_MED)
-        shape(side([(485, 790), (501, 790), (501, 888), (485, 888)]), W_THIN)
-        shape(side([(486, 894), (502, 894), (502, 910), (486, 910)]), W_THIN)
+        shape(side([(480, 782), (506, 782), (506, 930), (480, 930)]), W_MED, DOOR)
+        shape(side([(485, 790), (501, 790), (501, 888), (485, 888)]), W_THIN, GLASS)
+        shape(side([(486, 894), (502, 894), (502, 910), (486, 910)]), W_THIN, DOOR_LIGHT)
         # Door leaves with arched kick panels
-        shape(side([(508, 780), (553, 780), (553, 930), (508, 930)]), W_MED)
-        shape(side([(514, 790), (547, 790), (547, 882), (514, 882)]), W_THIN)
+        shape(side([(508, 780), (553, 780), (553, 930), (508, 930)]), W_MED, DOOR)
+        shape(side([(514, 790), (547, 790), (547, 882), (514, 882)]), W_THIN, DOOR_LIGHT)
         ax, ay = side([(530.5, 913)])[0]
         a, b = P(ax - 15, ay - 15), P(ax + 15, ay + 15)
         pygame.draw.arc(surf, INK, pygame.Rect(a[0], a[1], b[0] - a[0], b[1] - a[1]),
@@ -432,7 +473,11 @@ def draw_lawn_and_steps():
         bush_points.append((x, val))
         
     bush = smooth(bush_points, 4)
-    fill(bush + [(mx(216), 1058), (216, 1058)])
+    fill([(42, 1058), (1068, 1058), (1068, 1244), (42, 1244)], PAVING)
+    fill([(40, 1244), (1070, 1244), (1070, 1266), (40, 1266)], CURB)
+    fill([(40, 1266), (1070, 1266), (1070, 1291), (40, 1291)], CURB_DARK)
+    fill([(40, 1291), (1070, 1291), (1070, 1345), (40, 1345)], ROAD)
+    fill(bush + [(mx(216), 1058), (216, 1058)], LAWN)
     lines(bush, W_MED)
     
     tuft_coords = [
@@ -444,7 +489,7 @@ def draw_lawn_and_steps():
 
     # Side staircases
     for side in (lambda p: p, mirror):
-        fill(side([(42, 922), (216, 922), (216, 1058), (42, 1058)]))
+        fill(side([(42, 922), (216, 922), (216, 1058), (42, 1058)]), STEP)
         lines(side([(55, 922), (216, 922)]), W_MED)
         lines(side([(66, 930), (216, 930)]), W_MED)
         lines(side([(55, 922), (44, 1058)]))
@@ -454,19 +499,19 @@ def draw_lawn_and_steps():
         for y in step_y_vals:
             offset_x = 66 - (y - 930) * 0.07
             lines(side([(offset_x, y), (198, y)]), W_MED)
-        shape(side([(198, 918), (216, 918), (216, 1060), (198, 1060)]))
+        shape(side([(198, 918), (216, 918), (216, 1060), (198, 1060)]), color=STONE)
 
     line((44, 1058), (mx(44), 1058))
 
     # Central steps down to the street
-    fill([(458, 1058), (mx(458), 1058), (mx(458), 1244), (458, 1244)])
+    fill([(458, 1058), (mx(458), 1058), (mx(458), 1244), (458, 1244)], STEP)
     
     central_steps_y = [1082, 1112, 1146, 1180, 1215]
     for y in central_steps_y:
         line((480, y), (mx(480), y), W_MED)
         
     for side in (lambda p: p, mirror):
-        shape(side([(458, 1050), (480, 1050), (480, 1244), (458, 1244)]))
+        shape(side([(458, 1050), (480, 1050), (480, 1244), (458, 1244)]), color=STONE)
 
     # Paving stones (hardcoded grid list)
     bricks = [(76, 1072, 1), (236, 1071, 1), (392, 1068, 0), (438, 1094, 0),
@@ -477,9 +522,9 @@ def draw_lawn_and_steps():
               (792, 1192, 1), (905, 1226, 0), (1025, 1190, 1), (1040, 1228, 0)]
               
     for x, y, pair in bricks:
-        rbox(x - 15, y - 6, x + 15, y + 6, 5, W_MED)
+        rbox(x - 15, y - 6, x + 15, y + 6, 5, W_MED, PAVER)
         if pair == 1:
-            rbox(x - 4, y + 2.5, x + 24, y + 14.5, 5, W_MED)
+            rbox(x - 4, y + 2.5, x + 24, y + 14.5, 5, W_MED, PAVER)
 
     # Kerb and street lines
     street_lines = [1244, 1266, 1291]
@@ -492,6 +537,7 @@ def render():
     global surf
     surf = pygame.Surface((WIDTH * SS, HEIGHT * SS))
     surf.fill(BG)
+    fill([(40, 50), (1070, 50), (1070, 1345), (40, 1345)], SKY)
 
     draw_trees_and_fences()
     draw_main_roof()
@@ -519,7 +565,7 @@ def render():
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Victorian House Line Art - Press ESC to Exit, S to save")
+    pygame.display.set_caption("Victorian House - Press ESC to Exit, S to save")
     
     picture = render()
     clock = pygame.time.Clock()
