@@ -73,10 +73,20 @@ def calculate_midpoints(ax, ay, bx, by, cx, cy, dx, dy, px, py):
             print(f"({px}, {py}) lies within Quadrant 4.")
 
 # Main
-rect_x = 3.0
-rect_y = 5.0
-rect_width = 17.0
-rect_height = 21.0
+rect_x, rect_y = clean_and_parse_input(
+    input("Enter the rectangle's bottom-left corner as (x, y): ")
+)
+
+while True:
+    try:
+        rect_width = float(input("Enter the rectangle's width: "))
+        rect_height = float(input("Enter the rectangle's height: "))
+        if rect_width <= 0 or rect_height <= 0:
+            print("Error: Width and height must be positive.")
+            continue
+        break
+    except ValueError:
+        print("Error: Width and height must be numeric.")
 
 ax, ay = rect_x, rect_y
 bx, by = rect_x, rect_y + rect_height

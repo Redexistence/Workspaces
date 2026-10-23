@@ -40,11 +40,11 @@ def process_rectangle(x, y, width, height, px, py):
     else:
         print(f"({px}, {py}) is outside the rectangle.")
 
-# examples from sheet
-rect_x = 3
-rect_y = 5
-rect_width = 17
-rect_height = 21
+# Get the rectangle coordinates and dimensions from the user
+rect_x = int(input("Enter the rectangle's bottom-left x-coordinate: "))
+rect_y = int(input("Enter the rectangle's bottom-left y-coordinate: "))
+rect_width = int(input("Enter the rectangle's width: "))
+rect_height = int(input("Enter the rectangle's height: "))
 
 user_point = input("Please enter the point in the form (x, y): ")
 cleaned_point = user_point.replace("(", "").replace(")", "")

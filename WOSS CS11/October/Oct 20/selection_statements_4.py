@@ -52,11 +52,16 @@ rect_y = 5
 rect_width = 17
 rect_height = 21
 
-user_point = input("Please enter the point in the form (x, y): ")
-cleaned_point = user_point.replace("(", "").replace(")", "")
-parts = cleaned_point.split(",")
-px_input = int(parts[0].strip())
-py_input = int(parts[1].strip())
+user_point = input("Please enter the point in the form (x, y): ").strip()
+try:
+    cleaned_point = user_point.strip("() ")
+    parts = [coordinate.strip() for coordinate in cleaned_point.split(",")]
+    if len(parts) != 2:
+        raise ValueError
+    px_input, py_input = map(int, parts)
+except ValueError:
+    print("Invalid point. Enter two integer coordinates, for example: (8, 12).")
+    exit()
 
 print(f"The rectangle has vertices A({rect_x}, {rect_y}), B({rect_x}, {rect_y+rect_height}), C({rect_x+rect_width}, {rect_y+rect_height}), D({rect_x+rect_width}, {rect_y})")
 calculate_midpoints(rect_x, rect_y, rect_x, rect_y+rect_height, rect_x+rect_width, rect_y+rect_height, rect_x+rect_width, rect_y, px_input, py_input)

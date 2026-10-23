@@ -18,10 +18,10 @@ def define_rectangle(x, y, width, height):
     
     print(f"The rectangle has vertices A({ax}, {ay}), B({bx}, {by}), C({cx}, {cy}) and D({dx}, {dy})")
 
-# examples from the sheet
-rect_x = 3
-rect_y = 5
-rect_width = 17
-rect_height = 21
+# Get rectangle dimensions and coordinates from the user
+rect_x = float(input("Enter the x-coordinate of point A: "))
+rect_y = float(input("Enter the y-coordinate of point A: "))
+rect_width = float(input("Enter the rectangle width: "))
+rect_height = float(input("Enter the rectangle height: "))
 
 define_rectangle(rect_x, rect_y, rect_width, rect_height)

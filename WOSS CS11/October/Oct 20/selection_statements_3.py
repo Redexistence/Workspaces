@@ -12,11 +12,11 @@ def define_rectangle(x, y, width, height, px, py):
     else:
         print(f"({px}, {py}) is outside the rectangle.")
 
-# Again, the example values from the assignment sheet
-rect_x = 3
-rect_y = 5
-rect_width = 17
-rect_height = 21
+# Get the rectangle's position and dimensions from the user
+rect_x = int(input("Please enter the rectangle's x coordinate: "))
+rect_y = int(input("Please enter the rectangle's y coordinate: "))
+rect_width = int(input("Please enter the rectangle's width: "))
+rect_height = int(input("Please enter the rectangle's height: "))
 
 px_input = int(input("Please enter the x coordinate of P: "))
 py_input = int(input("Please enter the y coordinate of P: "))
