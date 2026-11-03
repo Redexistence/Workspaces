@@ -1,5 +1,6 @@
 # House drawing script using pygame
 # Note to self: remember to clean up globals later, surf is acting weird if not global
+
 import math
 import random
 import sys

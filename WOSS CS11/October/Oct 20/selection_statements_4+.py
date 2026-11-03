@@ -3,29 +3,14 @@ def clean_and_parse_input(raw_input):
     Cleans up input string and safely converts contents to a numerical point.
     Handles malformations seamlessly.
     """
-    clean_str = raw_input.replace("(", "").replace(")", "")
-    
-    if "," not in clean_str:
-
-        tokens = clean_str.split()
-    else:
-        tokens = clean_str.split(",")
-        
-    valid_tokens = []
-    for t in tokens:
-        stripped = t.strip()
-        if stripped != "":
-            valid_tokens.append(stripped)
-            
-    if len(valid_tokens) != 2:
-        print("Error: Input does not contain exactly an X and Y coordinate. Ensure format is (x, y).")
-        return None
-        
+    clean_str = raw_input.replace("(", "").replace(")", "").replace(",", " ")
     try:
-        x_val = float(valid_tokens[0])
-        y_val = float(valid_tokens[1])
+        x_text, y_text = clean_str.split()
+        x_val = float(x_text)
+        y_val = float(y_text)
         return x_val, y_val
     except ValueError:
+        print("Error: Input must contain exactly two numeric coordinates. Ensure format is (x, y).")
         print("Error: One or both entered coordinate variables are non-numeric strings.")
         return None
 
@@ -73,31 +58,33 @@ def calculate_midpoints(ax, ay, bx, by, cx, cy, dx, dy, px, py):
             print(f"({px}, {py}) lies within Quadrant 4.")
 
 # Main
-rect_x, rect_y = clean_and_parse_input(
+rectangle_point = clean_and_parse_input(
     input("Enter the rectangle's bottom-left corner as (x, y): ")
 )
+if rectangle_point is None:
+    raise SystemExit
+rect_x, rect_y = rectangle_point
 
-while True:
-    try:
-        rect_width = float(input("Enter the rectangle's width: "))
-        rect_height = float(input("Enter the rectangle's height: "))
-        if rect_width <= 0 or rect_height <= 0:
-            print("Error: Width and height must be positive.")
-            continue
-        break
-    except ValueError:
-        print("Error: Width and height must be numeric.")
+try:
+    rect_width = float(input("Enter the rectangle's width: "))
+    rect_height = float(input("Enter the rectangle's height: "))
+except ValueError:
+    print("Error: Width and height must be numeric.")
+    raise SystemExit
+if rect_width <= 0 or rect_height <= 0:
+    print("Error: Width and height must be positive.")
+    raise SystemExit
 
 ax, ay = rect_x, rect_y
 bx, by = rect_x, rect_y + rect_height
 cx, cy = rect_x + rect_width, rect_y + rect_height
 dx, dy = rect_x + rect_width, rect_y
 
-parsed_point = None
-while parsed_point is None:
-    user_input = input("Please enter the point in the form (x, y): ")
-    parsed_point = clean_and_parse_input(user_input)
-
+parsed_point = clean_and_parse_input(
+    input("Please enter the point in the form (x, y): ")
+)
+if parsed_point is None:
+    raise SystemExit
 px_input, py_input = parsed_point
 
 print(f"The rectangle has vertices A({ax:.0f}, {ay:.0f}), B({bx:.0f}, {by:.0f}), C({cx:.0f}, {cy:.0f}) and D({dx:.0f}, {dy:.0f})")
